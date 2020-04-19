@@ -1,0 +1,337 @@
+<head>
+	<meta charset="utf-8">
+	<title>Help!</title>
+</head>
+<body>
+	<header>
+		<a href="/">← Return to Index</a>
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 520 160">
+			<g>
+			<path d="M39.9,17.3v125.3c0,2.9-1.5,4.4-4.4,4.4H17.8c-2.9,0-4.4-1.5-4.4-4.4V17.3c0-2.9,1.5-4.4,4.4-4.4h17.7
+				C38.4,12.9,39.9,14.4,39.9,17.3z"/>
+			<path d="M91.6,147.1H74.3c-2.9,0-4.4-1.5-4.4-4.4V17.3c0-2.9,1.5-4.4,4.4-4.4h15.6c2.9,0,4.9,1,5.8,2.9l42.1,79h0.8V17.3
+				c0-2.9,1.5-4.4,4.4-4.4h17.3c2.9,0,4.4,1.5,4.4,4.4v125.3c0,2.9-1.5,4.4-4.4,4.4h-15.2c-3.1,0-5.3-1.4-6.7-4.2L96.7,65.3h-0.8v77.3
+				C95.9,145.6,94.5,147.1,91.6,147.1z"/>
+			<path d="M193.7,142.6V17.3c0-2.9,1.5-4.4,4.4-4.4h51.5c10.8,0,19.3,3,25.3,8.9s9.1,14.3,9.1,25.1v66.1c0,10.8-3,19.2-9.1,25.1
+				c-6,5.9-14.5,8.9-25.3,8.9h-51.5C195.2,147.1,193.7,145.6,193.7,142.6z M222.5,124h22.7c4.4,0,7.6-0.9,9.5-2.8
+				c1.9-1.9,2.8-5,2.8-9.5V48.1c0-4.4-0.9-7.6-2.8-9.5c-1.9-1.9-5-2.8-9.5-2.8h-22.7c-1.5,0-2.3,0.8-2.3,2.3v83.6
+				C220.2,123.3,220.9,124,222.5,124z"/>
+			<path d="M383.4,147.1h-68.2c-2.9,0-4.4-1.5-4.4-4.4V17.3c0-2.9,1.5-4.4,4.4-4.4h68.2c2.8,0,4.2,1.5,4.2,4.4v14.2
+				c0,2.9-1.4,4.4-4.2,4.4h-43.6c-1.7,0-2.5,0.8-2.5,2.3v27.1c0,1.5,0.8,2.3,2.5,2.3h35.7c2.9,0,4.4,1.5,4.4,4.4v14.2
+				c0,2.9-1.5,4.4-4.4,4.4h-35.6c-1.7,0-2.5,0.8-2.5,2.3v29c0,1.5,0.8,2.3,2.5,2.3h43.6c2.8,0,4.2,1.5,4.2,4.4v14.2
+				C387.6,145.6,386.2,147.1,383.4,147.1z"/>
+			<path d="M427.8,147.1h-20.6c-1.4,0-2.4-0.4-2.9-1.4c-0.6-0.9-0.6-2,0-3.2l32.3-64l-31.3-60.9c-0.6-1.1-0.6-2.2,0-3.1
+				c0.6-1,1.5-1.5,2.9-1.5h20c3.5,0,5.8,1.5,6.9,4.4l19.8,44.8h0.8l19.6-44.8c1.4-2.9,3.6-4.4,6.7-4.4h20.4c1.4,0,2.4,0.5,3,1.6
+				c0.6,1,0.7,2.1,0.1,3.2l-31.7,60.7l32.3,63.8c0.7,1.4,0.8,2.5,0.2,3.4s-1.6,1.4-3.1,1.4h-20.8c-2.9,0-4.9-1.4-6-4.2l-20.6-45H455
+				l-20.8,45C432.8,145.6,430.7,147.1,427.8,147.1z"/>
+			</g>
+		</svg>
+	</header>
+	<section>
+		<article><h1 id="preface">Preface</h1>
+<p>This guide is meant as a comprehensive overview of the history and decisions behind the javascript tools powering index, why they are shaped they way they are and where I think they should move towards (spoiler: it's react).</p>
+<p>It's intended as a long read overview of the whole architecture for whomever is in charge of leading it in the future. if you are only interested on making component-level changes you might be better served by the readme files linked on our repo.</p>
+<p>Before reading this guide you should make yourself familiar with the READMEs for both css and javascript, both also linked from our repo</p>
+<h2 id="designgoals">Design goals</h2>
+<p>While our javascript code doesn't base itself on any popular frameworks it does share a lot with the mindset and goals of modern tooling such as React or Vue. It's goals are:</p>
+<ul>
+<li><p><strong>Ease of use from within Laravel</strong> Offer behavior as simple pluggable html elements that Laravel can render from templates, avoiding writing extra Javascript glue code  </p></li>
+<li><p><strong>Zero globals</strong> calls to <code>$()</code> should be avoided and all DOM operations should be made inside an element (<code>$element.find()</code>), keeping code scoped</p></li>
+<li><p><strong>Communication via events</strong> Most application behavior is encapsulated inside discrete elements, which can talk to each other by bubbling events up the DOM tree, then reacting to events on <code>window</code>. More on this on the events chapter</p></li>
+<li><p><strong>No class inheritance</strong> Due to the way component based javascript is structured it's not desirable to use class inheritance within components. You can instead use composition, by extracting common behaviors to a <code>renderable</code> or an <code>util</code></p></li>
+</ul>
+<h1 id="elements">Elements</h1>
+<p>90% of the javascript is constructed around <code>components</code>, <code>triggers</code>, and <code>views</code>. These elements serve different purposes but behave identically from a code standpoint (more on this later) and from now on, for the sake of simplicity, I'll refer to all three of them as <code>elements</code>.</p>
+<p>Elements are any <code>&lt;div&gt;</code> with a specific classname inferred from their name. Think of them as a javascript callback for acting on that window, for example:</p>
+<pre><code>/*traditional jQuery*/
+$('.component_button').css('color','red');
+
+/*index.co.js*/
+class button extends Component {
+    […]
+    apply() {
+        this.$element.css('color','red');
+    }
+}
+</code></pre>
+<p>This allows you to encapsulate code, by separating the code applied to an element from the one actually selecting those components and keeping their state across page loads. It also greatly improves testability and portability, as the code affecting any element will always stay inside the file named after it.</p>
+<h2 id="componentstriggersandviews">Components, Triggers, and Views</h2>
+<p>The difference between these three elements comes into play when you consider the rest of the HTML and CSS besides Javascript. (You should read our CSS styleguide if you haven't yet)</p>
+<p>None of this is enforced on code so you must be extra careful to avoid introducing potential bugs</p>
+<h3 id="components">Components</h3>
+<pre><code>&lt;div class="c_tabbar"&gt;
+    &lt;div class="c_tabbar-item"&gt;Home&lt;/div&gt;
+    &lt;div class="c_tabbar-item"&gt;Visit&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Components are a defined block of reusable html that can be styled and contain children. The javascript for a component will extend the behavior of this block and can apply styles and select children within. Any given div can only be 1 component at once.</p>
+<h3 id="triggers">Triggers</h3>
+<pre><code>&lt;div class="c_tabbar-item trigger_vindow trigger_tooltip" title="Go home"&gt;Home&lt;/div&gt;
+</code></pre>
+<p>A trigger attaches a behavior to any html block, such as opening a modal window on click or adding tooltips on hover. triggers can, by design be stackable, meaning an object can have n triggers.</p>
+<p>Triggers shouldn't have css attached as a general rule and should be light in behavior</p>
+<h3 id="views">Views</h3>
+<pre><code>&lt;div class="view_listEditor"&gt;
+    […]
+&lt;/div&gt;
+</code></pre>
+<p>A view is a complex collection of other elements. As components should be reusable you can use views to define complex behavior interplays where a collection of components wouldn't suffice.</p>
+<h3 id="actualusage">Actual usage</h3>
+<p>All three elements will apply their behavior to <em>any</em> HTML element with a class named after it, component is shortened to c for legacy reasons and could benefit from changing it.</p>
+<pre><code>component/button.js
+=&gt; .c_button
+
+trigger/expandable.js
+=&gt; .trigger_expandable
+
+view/import.js
+=&gt; .view_import
+</code></pre>
+<p>Elements can also take <code>parameters</code> with arbitrary data, these are html data tags prefixes with the full element name with dashes instead of camelcase, for example</p>
+<pre><code>&lt;form class="c_ajaxForm" data-ajax-form-after-submit="reload"&gt;&lt;/form&gt;  
+
+class ajaxForm extends Component {
+    […]
+    apply() {
+        alert(this.parameters.afterSubmit);
+    }
+}
+</code></pre>
+<h2 id="complexelements">Complex elements</h2>
+<p>Some elements (especially views) can contain too much behavior and feel cramped on a single file. For those you can use the following structure.</p>
+<pre><code>📁 component
+ 🌟 buttonFollow.js (entry)
+
+📁 component
+    📁 buttonFollow
+        🌟 buttonFollow.js (entry)
+        📄 buttonFollowCounter.js
+        📁 data
+            📄 states.js
+        📁 renderable
+            📄 buttonFollow--following.js
+            📄 buttonFollow--default.js
+</code></pre>
+<p>A complex element can have any directory structure inside although it's recommendable to use <code>renderable</code> elements (inheriting from <code>framework/primitive/Renderable</code>) and keep data on a <code>/data</code> folder as these are common patterns across our js.</p>
+<h1 id="events">Events</h1>
+<p>Elements can use standard jQuery events to talk among each other. Imagine the following construct</p>
+<pre><code>&lt;div class="c_header"&gt;
+    &lt;div
+        class="view_followCounter"
+        data-follow-counter-id="826"
+    &gt;
+        &lt;span&gt;123&lt;/span&gt; followers
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;a
+    class="c_uiButton trigger_follow"
+    data-follow-id="826"
+&gt;
+    Follow
+&lt;/a&gt;        
+</code></pre>
+<p>Using events we can entirely decouple these two elements. The follow button could be anywhere else on the page or even on a modal</p>
+<pre><code>/*view/followCounter.js*/
+const $counter = this.$element.find('span');
+$(window).on(config.events.follow,(ev,data) =&gt; {
+        if(data.id === this.parameters.id) {
+                $counter.text($counter.text()+1);
+        }
+});
+
+/*trigger/follow.js*/
+this.$element.on('click', ev =&gt; {
+        this.$element.trigger(config.events.follow,{
+                id: this.parameters.id
+        }
+});
+</code></pre>
+<h2 id="significantdomchange">significantDomChange</h2>
+<p>There's a very special event you must know that keeps this whole system together, it's <code>significantDomChange</code>.</p>
+<p>Every time you do a, well, significant change on the DOM (to be precise, every time you append new HTML that contains or <em>may</em> contain new js elements) you must do</p>
+<pre><code>$(window).trigger(config.events.significantDomChange)
+</code></pre>
+<p>This lets the watcher (see the Code chapter) pick up the changes and look for new class names. This is intended for large scale ajax content, in general if you want to add elements from javascript it's advisable to turn them into <code>renderables</code> instead so you can use a cleaner API.</p>
+<p>If you are inside a loop or importing non critical content you should use</p>
+<pre><code>$(window).trigger(config.events.significantDomChangeCanWait)
+</code></pre>
+<p>instead. It works the same as far as you are concerned but it will wait a bit to tell the watcher to rescan the DOM, meaning you can use it lots of times without a performance penalty as it will only run once.</p>
+<p>Curious about the inner workings? Check the code reference or dig straight into <code>framework/service/SignificantDomChange.js</code> and <code>framework/Watcher.js</code></p>
+<h1 id="therestofthings">The rest of things</h1>
+<p>Some times you need common behavior, globals or just things that aren't stuck to an html element, that's when the rest of our javascript comes into play</p>
+<h2 id="renderable">Renderable</h2>
+<p>Renderables are a fully featured solution for drawing DOM elements from code based on a set of parameters. Renderables inherit from <code>framework/primitive/Renderable.js</code> (some old ones just expose a similar API, but should be rewritten).</p>
+<p>Their basic usage goes like this:</p>
+<pre><code>const popup = new Window({
+    contents: 'hi there!'
+});
+popup.place();
+</code></pre>
+<p>You can easily convert most elements into renderables if you ever feel like you'll need them somewhere else too. This is our preferred alternative to doing class inheritance.</p>
+<h2 id="util">Util</h2>
+<p>Contains classes on the root directory and tiny js helper functions on <code>/js</code> that help do various things, this place is a bit of a grab bag and could be organized better but don't really bother unless it ever reaches 15 files total.</p>
+<h2 id="service">Service</h2>
+<p>Services are classes that get loaded on every pageload and do global things. You should <em>not</em> include them from other code parts but you can make a service call an util, then call the same util from elsewhere.</p>
+<p>Services are useful, for example, for listening to global events throw by elements and dispatching success or failure events</p>
+<h2 id="framework">Framework</h2>
+<p>This directory contains the core files needed for everything else to run. Ideally you could delete everything but <code>app.js</code> and <code>/framework</code> and have an errorless compilation, even if the code itself would do nothing.</p>
+<p>As of today this is not possible due to the location of <code>util/js/dom</code> which could and should be moved.</p>
+<h3 id="services">Services</h3>
+<p><code>framework/services</code> acts as the normal <code>/services</code> directory and all classes there will be autoloaded, the only difference is that framework-wide services not related to index itself should go there for organization purposes</p>
+<h3 id="primitive">Primitive</h3>
+<p>Abstract class definitions</p>
+<h3 id="data">Data</h3>
+<p>Globals that aren't meant to be changed</p>
+<h3 id="loader">Loader</h3>
+<p>Autoloaders for elements, classes, etc. More on this on the Code Overview and Build chapters</p>
+<h1 id="codeoverview">Code overview</h1>
+<p>The chapter from before covers <em>why</em> things are happening the way they are, now let's get into what is actually happening, shall we?</p>
+<p>It is strongly encouraged that you spend a couple minutes following the code paths yourself, it's about 10 files total and they are very self-explaining. On any case please keep the files close for this chapter as I will be describing them in detail.</p>
+<h2 id="entry">Entry</h2>
+<p>The entry point for the application is <code>app.js</code> (shocking, i know right) which by itself just loads the <code>AutoServiceLoader</code> and <code>ElementLoader</code>.</p>
+<p>As we discussed earlier, services are loaded on their own so that name makes sense! In fact, if you open the <code>AutoServiceLoader</code> you'll see it's literally a list of classes that get loaded (And an autobuilt warning, more on that on the build chapter!)</p>
+<p><code>ElementLoader</code> is not much better, just making <code>Watcher</code> objects from a list of elements. As well as loading <code>importToChunk</code> which we'll also discuss on the build chapter.</p>
+<p>All these files are either artifacts from the build system or mere glue between said artifacts so we'll come back at them later, let's begin with the FUN</p>
+<h2 id="config">Config</h2>
+<p><code>config.js</code> houses some configuration parameters that the rest of elements can access at any time. Some of these parameters are being sent from laravel as a js object on <code>views/header.php</code>.</p>
+<h2 id="watcher">Watcher</h2>
+<p>A Watcher ensures every html element on the actual page gets actually acted on by their js element. It does this by iterating over the DOM on every page load as well as every time it receives a <code>significantDomChange</code> event.</p>
+<p>Once it finds a html element it just sends it over to the actual js file you wrote (for example <code>view/editorCompany.js</code>)</p>
+<h2 id="elementsabstractelement">Elements &amp; AbstractElement</h2>
+<p>Elements inherit from <code>primitive/Component.js</code>, <code>primitive/Trigger.js</code>, or <code>primitive/View.js</code> which in turn inherit from <code>primitive/AbstractElement.js</code>. Open both <code>AbstractElement</code> and another primitive of your choice to see how little actual change there is.</p>
+<p>You aren't supposed to override the constructor on elements as it does very ugly code initialization. You can see how it basically parses the html tag with the help of <code>framework/DomElement</code> and sends this to <code>apply()</code> giving you the parameters and the element already loaded on <code>this.*</code></p>
+<p><code>apply()</code> should be considered the actual constructor you get to override.</p>
+<h3 id="partsofanelement">Parts of an element</h3>
+<p>To not break at compile time element must have at least a <code>selector</code> and a matching class name. Due to the way javascript works the class name doesn't even matter so you can disable the strict checking here with zero consequences.</p>
+<h4 id="getselector">get selector()</h4>
+<pre><code>export default class UiButtonModifierFollowComponent extends Component {
+
+    static get selector() {
+        return 'uiButton--follow';
+    }
+
+    apply() {}  
+
+}
+</code></pre>
+<ul>
+<li>selector() is the actual css selector sans prefix and must match the file name</li>
+<li>the class name must match the selector except it uses full CamelCase and replaces <code>-</code> with <code>Sub</code> and <code>--</code> with <code>Modifier</code></li>
+</ul>
+<h4 id="getdefaultparameters">get defaultParameters()</h4>
+<p>Returns an object of parameters that will be assigned by default  on <code>this.parameters</code> if all of some of them are missing</p>
+<h4 id="getasync">get async()</h4>
+<p>Defines if the element will load asynchronously or not. What this means on a nutshell is that loaded javascript elements get a <code>{classname}--ready</code> css class attached to them, which you can use to toggle their visibility or display a wait cursor or whatever.</p>
+<p>By default elements get this class as soon as their js loads (as seen on <code>AbstractElement</code>, if you specify them as async they will wait for you to call <code>this.ready()</code>.</p>
+<pre><code>export default class RemoteTextComponent extends Component {
+
+    static get async() {
+        return true;
+    }
+
+    apply() {
+        fetch(this.parameters.endpoint)
+            .then(response =&gt; response.text)
+            .then(text =&gt; {
+                this.$element.text(text);
+                this.ready();
+            })
+    }  
+
+}
+
+
+/*css*/
+.c_remoteText {
+    display:none;
+    &amp;--ready {
+        display: block;
+    }
+}
+</code></pre>
+<h4 id="apply">apply()</h4>
+<p>Apply is where all the code happens. As you have already seen you can use <code>this.$element</code> to access the element, as well as <code>this.parameters</code> to access the parameters. Your code runs here which is the important part really.</p>
+<h2 id="frameworkdomelement">framework/DomElement</h2>
+<p>I kind of glossed over this one before, didn't I?</p>
+<p>This is where we dive deep into legacy and low-level code territory. DomElement is a layer over jQuery's basic <code>$</code> objects that adds useful tools relevant to index.</p>
+<p>Most of them are self explanatory but here is also where the magic of <em>parameter fetching</em> is happening. This is the process where the <code>data-</code> tags (and more!) get turned into parameters.</p>
+<p>To learn how this works however we have to go one level deeper. Bet you were curious about that <code>util/js/dom</code> linked from all files, right?</p>
+<h2 id="utiljsdom">util/js/dom</h2>
+<p>This is an abstraction layer over the entirety of jQuery. Most of it is bad as it extends some global javascript objects such as String and is not doing any caching of the jQuery plugins defined inside.</p>
+<p>Ideally you want to look into refactoring this file so it just returns a copy of jQuery with the plugins loaded inside and does so ONCE instead of every time, also move the getting parameters part out from here and into <code>framework/DomElement</code>.</p>
+<p>I suggest you grep most of these functions to see them in use as i don't advocate for keeping any of them as jQuery plugins and would rather see them refactored into framework-agnostic utils. here's a couple concepts of interest tho</p>
+<h3 id="getparams">getParams</h3>
+<p>This gets the parameters!! it will scan for <code>data-</code>tags on the HTML but <strong>ALSO</strong> in the css, letting you send over breakpoints. You can grep <code>--params</code> to see this in action. it should be refactored into <code>DomElement</code></p>
+<h3 id="findtarget">findTarget</h3>
+<p>This is a nifty useful tool used mostly on <code>trigger_popover</code> and similar items. These triggers allow you to specify their contents as a html selector and to avoid globals you can use a syntax with css-like selectors. It should become an util.</p>
+<pre><code>&lt;li
+    class="c_header-notificationIcon trigger_popover"
+    data-popover-style="white"
+    data-popover-fixed="true"
+    data-popover-target="&amp; .trigger_tooltip-target"
+&gt;
+    Notifications
+    &lt;script
+        type="text/ng-template"
+        class="trigger_tooltip-target"
+    &gt;
+        Notification menu
+    &lt;/script&gt;
+&lt;/li&gt;
+
+const $target = this.$element.findTarget(this.parameters.target);
+</code></pre>
+<h2 id="utilclassname">util/ClassName</h2>
+<p>Lets you programmatically define class names</p>
+<pre><code>$item.append(`
+    &lt;div class="${new ClassName('component',['tabbar','item','sub','sub']).get()}"&gt;
+        ${mission.subtext}
+    &lt;/div&gt;
+`)
+</code></pre>
+<p>Classname accepts three arguments, <code>type</code>, <code>name</code>, and <code>modifier</code>. type is one of the common element types mentioned across this document, name can be an array of elements for children, and modifier is optional and will apply one or more modifiers to the final classname</p>
+<pre><code>('component','header')
+=&gt; .c_header
+
+('component',['header','search'])
+=&gt; .c_header-search
+
+('component',['header','search'],'active')
+=&gt; .c_header-search--active
+</code></pre>
+<p>You can use <code>.get()</code> to get a full classname or <code>.getSelector()</code> to get the css selector (it's the name but with a period before it) for jQuery selectors</p>
+<h2 id="utilauth">util/auth</h2>
+<p>Checks if an user is authenticated using promises. This is unsafe as it's checked entirely on the frontend and thus modifiable using dev tools so it should only be used to prompt for login and whatnot.</p>
+<h1 id="buildsystem">Build system</h1>
+<p>Oh boy here we go.</p>
+<p>We are using grunt right now. You can type <code>grunt help</code> for a quick overview of what you can do as a user but you should already know those.</p>
+<p>If you take a quick look at <code>gruntfile.js</code> you'll see that we are using industry standard tools such as webpack and babel, these are the most complex parts and luckily they are widely documented. I'm gonna go over our webpack config later on in any case.</p>
+<p>There's also a collection of scripts <code>build/tasks</code> that aren't tied to grunt in any way but run from it. These are the ones building most of the autogenerated files you can see on <code>js/framework</code> and while they are a bit spaghetti-ish they can be easily refactored since they aren't coupled with anything, they just have to produce the same output as before</p>
+<h2 id="scripts">Scripts</h2>
+<h3 id="clean">Clean</h3>
+<p>This just cleans up a list of directories. To avoid temporary filed building up over time.</p>
+<h3 id="populateloader">populateLoader</h3>
+<p>This builds up <code>AutoServiceLoader.js</code> and <code>elementList.json</code>, both or which are later used by index.co.js to load elements and services. it mostly scans a lot of folders, grabs a lot of metadata from filenames and outputs what it finds.</p>
+<p>As stated earlier, elements can live in either <code>{element}/{elementName}.js</code> or <code>{element}/{elementName}/{elementName}.js</code>. This along with the fact that the initial directories can be a subdirectory <code>framework/service</code> add up a lot of code complexity here. it's still carrying a lot of legacy baggage and can easily be trimmed down and made more readable.</p>
+<h3 id="makepopularelementlist">makePopularElementList</h3>
+<p>This runs only when demanded and will scan <code>index.co</code> (the real one) as well as your dev site (provided you have a fully qualified <code>APP_BASE_URL_AUTHENTICATED</code> variable with login data on your .ENV) for the most used elements. These will then be loaded earlier on the build process which results in leaner page loads.</p>
+<h3 id="makelessimportlist">makeLessImportList</h3>
+<p>this makes the base less file that then includes all the components on <code>resources/less</code> as well as the overrides on <code>resources/less/override</code></p>
+<h2 id="grunttasks">Grunt tasks</h2>
+<p>by nature of grunt the files go through a mind boggling number of places and transformations before reaching their target. There's no easy explanation for this one, just read up on <code>gruntfile.js</code>, <code>build/grunt/config/*</code> and <code>build/config.js</code> and try to keep up!</p>
+<p>In general however files try to go to <code>build/temp</code> before they are finally moved to <code>public/build</code>. This is not entirely true as it's influenced by some of the inner workings of Webpack for example, which doesn't work nicely with grunt's file operations.</p>
+<h3 id="csso">csso</h3>
+<p>optimizes the resulting css</p>
+<h3 id="less">less</h3>
+<p>converts .less files to .css files, adds browser prefixes and applies the overrides defined by <code>makeLessImportList</code></p>
+<h3 id="uglify">uglify</h3>
+<p>uglifies the final js code. This should be refactored inside webpack tbh since they are probably doing redundant work</p>
+<h3 id="webpack">webpack</h3>
+<p>This is the file for webpack and babel configuration. Webpack and babel take our modern, cool, scoped, free of globals, javascript and turn it into normal javascript browsers can use.</p>
+<p>You can learn more on webpack at https://webpack.js.org</p>
+<p>This should be refactored to use webpack as a cli tool rather than as a grunt dependency, since webpack can handle transforming all the javascript instead of having 3 separate tools for it</p></article>
+		<nav></nav>
+	</section>
+</body>
+<link rel="stylesheet" href="purusu/purusu.css" />
+<script src="purusu/purusu.js"></script>

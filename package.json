@@ -1,0 +1,15 @@
+{
+  "name": "indexdoc",
+  "version": "1.0.0",
+  "description": "Documents for index's js code",
+  "main": "make.js",
+  "scripts": {
+    "install": "./tool/build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lau gonzalez, index team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "showdown": "^1.6.4"
+  }
+}

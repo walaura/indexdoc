@@ -1,0 +1,172 @@
+:root {
+	--brand: #1c6bf5;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i|Roboto+Mono');
+
+body {
+	font-family: Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	height: 1.5em;
+	background: #fff;
+	top: 0;
+	overflow: hidden;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	left: 0;
+	right: 0;
+	top: 0;
+	box-shadow: 0 2px 6px rgba(0,0,0,.1);
+	padding: .75em;
+	z-index: 1000;
+}
+
+header svg {
+	width: 4em;
+}
+
+header a {
+	text-decoration: none;
+	color: var(--brand);
+	font-weight: 800;
+	font-size: .95em;
+}
+
+section {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	margin: 2em;
+	position: relative;
+}
+
+article, nav {
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	color: #333;
+}
+
+article {
+	max-width: 50em;
+	line-height: 1.4;
+	flex: 1 1 auto;
+}
+
+nav {
+	width: 12rem;
+	position: -webkit-sticky;
+	position: -moz-sticky;
+	position: sticky;
+	max-height: calc(100vh - 6rem);
+	top: 0;
+	overflow: scroll;
+	overflow-y: scroll;
+	padding-left: 6rem;
+	padding-right: 2rem;
+	font-size: .7em;
+	opacity: .5;
+	transition: opacity 1s linear;
+	will-change: opacity;
+	background: #fff;
+	flex: 0 0 auto;
+}
+
+nav:hover {
+	opacity: 1;
+}
+
+nav .h1:not(:first-child) {
+	margin-top: 2em;
+}
+
+
+nav .h1 a {
+	text-transform: uppercase;
+	color: #111;
+	font-weight: 800;
+}
+
+nav .h3 a {
+	margin-left: 1em;
+}
+
+nav .h4 a {
+	margin-left: 2em;
+}
+
+nav .h5 a {
+	margin-left: 3em;
+}
+
+nav .h6 a {
+	margin-left: 4em;
+}
+
+nav a {
+	color: inherit;
+	display: block;
+	padding: .5em;
+	text-decoration: none;
+	border-radius: .125em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	will-change: color, background;
+	transition: all .1s linear;
+	white-space: nowrap;
+}
+nav a:hover {
+	color: var(--brand);
+	background: rgba(0,0,0,.05);
+}
+
+
+h1 {
+	background: var(--brand);
+	background-image: url(http://index.co/img/iconTile2.png);
+	background-size: 140px 140px;
+	color: #fff;
+	border-radius: .125rem;
+	padding: .25em .5em;
+	font-size: 5em;
+	margin-bottom: .5em;
+}
+h1:first-of-type {
+	margin-top: 0;
+}
+
+h2 {
+	margin-top: 4em;
+	color: #000;
+}
+
+h3 {
+	margin-top: 4em;
+	color: #000;
+	font-size: 1em;
+	text-transform: uppercase;
+}
+
+h4 {
+	margin-top: 4em;
+	font-size: 1em;
+	font-style: italic;
+	text-transform: uppercase;
+}
+
+code {
+	font-family: Roboto Mono, monospace;
+	background: rgba(0,0,0,.05);
+	padding: 0 .25em;
+	border-radius: .125em;
+}
+
+pre code {
+	display: block;
+	padding: 1em;
+}
